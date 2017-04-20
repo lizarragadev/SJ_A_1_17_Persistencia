@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 new FileOutputStream(file));
                         osw.write(etExterno.getText().toString());
                         osw.close();
-                        etExterno.setText("");
+
                     }catch (Exception e) {
                         System.out.println("Error: "+e.getMessage());
                     }
