@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SharedPreferences sharedPreferences;
 
     private String nombreArchivoInterno = "prueba_archivo_int.txt";
-    private String nombreArchivoExterno = "prueba_archivo_ext.txt";
+    private String nombreArchivoExterno = "prueba_jueves.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,17 +92,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void guardarPreferences() {
+        String valor1 = etPreferencesUno.getText().toString();
+        String valor2 = etPreferencesDos.getText().toString();
 
+        SharedPreferences.Editor sp = sharedPreferences.edit();
+        sp.putString("v1", valor1);
+        sp.putString("v2", valor2);
+        sp.commit();
+
+        etPreferencesUno.setText("");
+        etPreferencesDos.setText("");
     }
 
     public void leerPreferences() {
-
+        String valor1 = sharedPreferences.getString("v1", "");
+        String valor2 = sharedPreferences.getString("v2", "");
+        etPreferencesUno.setText(valor1);
+        etPreferencesDos.setText(valor2);
     }
-
+;
     public void guardarInterno() {
         if (!etInterno.getText().toString().equals("")) {
             try {
-
+                OutputStreamWriter output = new OutputStreamWriter(
+                        openFileOutput(nombreArchivoInterno, Context.MODE_PRIVATE)
+                );
+                output.write(etInterno.getText().toString());
+                output.close();
+                etInterno.setText("");
             } catch (Exception e) {
                 System.out.println("Error: "+e.getMessage());
             }
@@ -115,7 +132,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void leerInterno() {
         try {
-
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(
+                            openFileInput(nombreArchivoInterno))
+            );
+            String resultado = br.readLine();
+            br.close();
+            etInterno.setText(resultado);
         } catch (Exception e) {
             System.out.println("Error: "+e.getMessage());
         }
@@ -140,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             if (sdDisponible && sdAccesoEscritura) {
                 try {
-                    File dir = new File(Environment.getExternalStorageDirectory()+"/StudyJam/");
+                    File dir = new File(Environment.getExternalStorageDirectory()+"/Jueves20/");
                     if (!dir.exists()) {
                         dir.mkdir();
                     }
@@ -150,11 +173,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 new FileOutputStream(file));
                         osw.write(etExterno.getText().toString());
                         osw.close();
-
+                        etExterno.setText("");
                     }catch (Exception e) {
                         System.out.println("Error: "+e.getMessage());
                     }
-
                 } catch (Exception e) {
                     System.out.println("Error: "+e.getMessage());
                 }
@@ -172,13 +194,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             File file = Environment.getExternalStorageDirectory();
             File f = new File(file.getAbsolutePath(),
-                    "/StudyJam/"+nombreArchivoExterno);
+                    "/Jueves20/"+nombreArchivoExterno);
 
             BufferedReader br = new BufferedReader(
                     new InputStreamReader(new FileInputStream(f)));
             String texto = br.readLine();
             br.close();
-
+            etExterno.setText(texto);
         }catch (Exception e) {
             System.out.println("Error: "+e.getMessage());
         }
